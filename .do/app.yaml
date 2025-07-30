@@ -24,10 +24,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        value: ${db.DATABASE_URL}
+        value: ${DATABASE_URL}
         type: SECRET
-      - key: DATABASE_PATH
-        value: /tmp/sqlite.db
+
       - key: SESSION_SECRET
         value: ${SESSION_SECRET}
         type: SECRET
@@ -37,8 +36,7 @@ services:
       - key: HONEYPOT_SECRET
         value: ${HONEYPOT_SECRET}
         type: SECRET
-      - key: CACHE_DATABASE_PATH
-        value: /tmp/cache.db
+
       - key: AWS_ACCESS_KEY_ID
         value: ${AWS_ACCESS_KEY_ID}
         type: SECRET
@@ -68,9 +66,4 @@ services:
       - key: ALLOW_INDEXING
         value: "true"
 
-databases:
-  - name: db
-    engine: PG
-    version: "15"
-    production: false
-    size: db-s-1vcpu-1gb 
+ 
