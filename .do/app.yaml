@@ -3,7 +3,7 @@ services:
   - name: web
     source_dir: /
     github:
-      repo: your-username/do-epicapp
+      repo: aprat2406/fly-epicstack
       branch: main
     run_command: npm start
     build_command: npm run build:deploy
