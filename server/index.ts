@@ -39,10 +39,10 @@ const app = express()
 const getHost = (req: { get: (key: string) => string | undefined }) =>
 	req.get('X-Forwarded-Host') ?? req.get('host') ?? ''
 
-// fly is our proxy
+// Trust proxy for DigitalOcean App Platform
 app.set('trust proxy', true)
 
-// ensure HTTPS only (X-Forwarded-Proto comes from Fly)
+// Ensure HTTPS only (X-Forwarded-Proto comes from DigitalOcean)
 app.use((req, res, next) => {
 	if (req.method !== 'GET') return next()
 	const proto = req.get('X-Forwarded-Proto')
@@ -125,12 +125,9 @@ const rateLimitDefault = {
 	standardHeaders: true,
 	legacyHeaders: false,
 	validate: { trustProxy: false },
-	// Malicious users can spoof their IP address which means we should not default
-	// to trusting req.ip when hosted on Fly.io. However, users cannot spoof Fly-Client-Ip.
-	// When sitting behind a CDN such as cloudflare, replace fly-client-ip with the CDN
-	// specific header such as cf-connecting-ip
+	// Use X-Forwarded-For for DigitalOcean App Platform
 	keyGenerator: (req: express.Request) => {
-		return req.get('fly-client-ip') ?? `${req.ip}`
+		return req.get('X-Forwarded-For')?.split(',')[0] ?? req.ip
 	},
 }
 
@@ -213,7 +210,7 @@ app.all(
 	}),
 )
 
-const desiredPort = Number(process.env.PORT || 3000)
+const desiredPort = Number(process.env.PORT || 8080)
 const portToUse = await getPort({
 	port: portNumbers(desiredPort, desiredPort + 100),
 })
